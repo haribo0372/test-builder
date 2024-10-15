@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -46,9 +47,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
-//
-//    @OneToMany(fetch = FetchType.EAGER)
-//    private Set<Quiz> quizzes;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Quiz> quizzes;
 
 
     @Override
