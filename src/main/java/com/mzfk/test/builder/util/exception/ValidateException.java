@@ -1,4 +1,4 @@
-package com.mzfk.testBuilder.util.exception;
+package com.mzfk.test.builder.util.exception;
 
 public class ValidateException extends RuntimeException {
     public ValidateException(String message) {
