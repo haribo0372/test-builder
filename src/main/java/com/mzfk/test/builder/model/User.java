@@ -8,23 +8,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "t_users")
 public class User implements UserDetails {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
-    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
@@ -37,10 +31,6 @@ public class User implements UserDetails {
     @NotEmpty(message = "Заполните пароль")
     private String password;
 
-    @Transient
-    @NotEmpty(message = "Повторите пароль")
-    private String passwordConfirm;
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
@@ -48,9 +38,28 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Quiz> quizzes;
 
+
+    public User() {
+        quizzes = new HashSet<>();
+    }
+
+    public User(Long id, String username, String password,
+                String email, Role role, Set<Quiz> quizzes) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.quizzes =
+                quizzes == null ? new HashSet<>() : quizzes;
+    }
+
+    public void addQuiz(Quiz quiz){
+        quizzes.add(quiz);
+    }
 
     @Override
     public boolean equals(Object o) {

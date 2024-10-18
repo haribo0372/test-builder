@@ -2,24 +2,32 @@ package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-//@Data
-//@Entity(name = "t_quiz")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "quiz")
 public class Quiz {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "quiz_id")
-//    private Long id;
-//
-//    @NotBlank(message = "Название теста не должно быть пустым")
-//    @Column(name = "title")
-//    private String title;
-//
-//    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Answer> answers;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "quiz_id")
+    private Long id;
 
+    @Column(name = "title")
+    @NotBlank(message = "Название теста не должно быть пустым")
+    private String title;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private final Set<Question> questions = new HashSet<>();
+
+    public void addQuestion(Question question){
+        questions.add(question);
+    }
 }

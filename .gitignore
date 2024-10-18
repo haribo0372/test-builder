@@ -31,4 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-.env
+/.env
+/script_db_scheme.txt
+/test-create-quiz.json
