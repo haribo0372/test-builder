@@ -1,0 +1,456 @@
+{
+	"info": {
+		"_postman_id": "31abf527-f00e-497a-b722-fcebc3126d47",
+		"name": "test-builder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26081744"
+	},
+	"item": [
+		{
+			"name": "Registration",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonResponse = pm.response.json();\r",
+							"console.log(jsonResponse);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Статус ответа 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит Jwt-токен\", function () {\r",
+							"    pm.expect(jsonResponse).to.have.property('token');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/sign-up",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authorization",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonResponse = pm.response.json();\r",
+							"console.log(jsonResponse);\r",
+							"\r",
+							"let jwt_token = jsonResponse.token;\r",
+							"\r",
+							"pm.environment.set(\"jwt_token\", jwt_token);\r",
+							"\r",
+							"pm.test(\"Статус ответа 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит Jwt-токен\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    console.log(jsonData);\r",
+							"    pm.expect(jsonData).to.have.property('token');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/sign-in",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Quiz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonResponse = pm.response.json();\r",
+							"let jsonRequest = pm.request.body.raw;\r",
+							"\r",
+							"console.log(\"Request : \" + jsonRequest);\r",
+							"console.log(\"Response : \" + jsonResponse);\r",
+							"\r",
+							"pm.test(\"Статус ответа 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит ID созданного квиза\", function () {\r",
+							"    pm.expect(jsonResponse).to.have.property('id');\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"quizId\", jsonResponse.id);\r",
+							"pm.environment.set(\"questionId\", jsonResponse.questions[0].id);\r",
+							"pm.environment.set(\"answerId\", jsonResponse.questions[0].answers[0].id);\r",
+							"pm.environment.set(\"requestBody\", jsonResponse);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"requestBody\", JSON.stringify({\r",
+							"\r",
+							"    title: \"My_Quiz\",\r",
+							"    questions: [\r",
+							"        {\r",
+							"            questionText: \"What is the capital of France?\",\r",
+							"            answers: [\r",
+							"                {\r",
+							"                    \"answerText\": \"Paris\",\r",
+							"                    \"is_correct\": true\r",
+							"                }\r",
+							"            ]\r",
+							"        },\r",
+							"        {\r",
+							"            questionText: \"What is 2 + 2?\",\r",
+							"            answers: [\r",
+							"                {\r",
+							"                    answerText: \"4\",\r",
+							"                    is_correct: true\r",
+							"                },\r",
+							"                {\r",
+							"                    answerText: \"3\",\r",
+							"                    is_correct: false\r",
+							"                }\r",
+							"            ]\r",
+							"        }\r",
+							"    ]\r",
+							"}));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{requestBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/quiz",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"quiz"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get created quiz",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonResponse = pm.response.json();\r",
+							"// let jsonRequest = pm.request.body.raw;\r",
+							"\r",
+							"// console.log(\"Request : \" + jsonRequest);\r",
+							"console.log(\"Response : \" + jsonResponse);\r",
+							"\r",
+							"pm.test(\"Статус ответа 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const createdQuiz = pm.environment.get(\"requestBody\");\r",
+							"const requiredQuestions = createdQuiz.questions;\r",
+							"const expectedQuestions = jsonResponse.questions;\r",
+							"\r",
+							"pm.test(\"Ответ содержит квиз по id\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"quizId\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Проверка равенства массивов вопросов\", function () {\r",
+							"    pm.expect(questionsEqual(requiredQuestions, expectedQuestions)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"function questionsEqual(arr1, arr2) {\r",
+							"    if (arr1.length !== arr2.length) return false;\r",
+							"\r",
+							"    for (let i = 0; i < arr1.length; i++) {\r",
+							"        const obj1 = arr1[i];\r",
+							"        const obj2 = arr2[i];\r",
+							"\r",
+							"        // Проверяем значения questionText\r",
+							"        if (obj1.questionText !== obj2.questionText) {\r",
+							"            return false;\r",
+							"        }\r",
+							"\r",
+							"        // Проверяем значения answers\r",
+							"        if (obj1.answers.length !== obj2.answers.length) {\r",
+							"            return false;\r",
+							"        }\r",
+							"        \r",
+							"        for (let j = 0; j < obj1.answers.length; j++) {\r",
+							"            const answer1 = obj1.answers[j];\r",
+							"            const answer2 = obj2.answers[j];\r",
+							"\r",
+							"            // Проверяем значения answerText и is_correct\r",
+							"            if (answer1.answerText !== answer2.answerText || answer1.is_correct !== answer2.is_correct) {\r",
+							"                return false;\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    return true;\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function questionsEqual(arr1, arr2) {\r",
+							"    if (arr1.length !== arr2.length) return false;\r",
+							"\r",
+							"    for (let i = 0; i < arr1.length; i++) {\r",
+							"        const obj1 = arr1[i];\r",
+							"        const obj2 = arr2[i];\r",
+							"\r",
+							"        // Проверяем значения questionText\r",
+							"        if (obj1.questionText !== obj2.questionText) {\r",
+							"            return false;\r",
+							"        }\r",
+							"\r",
+							"        // Проверяем значения answers\r",
+							"        if (obj1.answers.length !== obj2.answers.length) {\r",
+							"            return false;\r",
+							"        }\r",
+							"        \r",
+							"        for (let j = 0; j < obj1.answers.length; j++) {\r",
+							"            const answer1 = obj1.answers[j];\r",
+							"            const answer2 = obj2.answers[j];\r",
+							"\r",
+							"            // Проверяем значения answerText и is_correct\r",
+							"            if (answer1.answerText !== answer2.answerText || answer1.is_correct !== answer2.is_correct) {\r",
+							"                return false;\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    return true;\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/quiz/{{quizId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"quiz",
+						"{{quizId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all quizzes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonResponse = pm.response.json();\r",
+							"// let jsonRequest = pm.request.body.raw;\r",
+							"\r",
+							"// console.log(\"Request : \" + jsonRequest);\r",
+							"console.log(\"Response : \" + jsonResponse);\r",
+							"\r",
+							"pm.test(\"Статус ответа 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит квиз по id\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0].id).to.eql(pm.environment.get(\"quizId\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ответ содержит один квиз\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length).to.eql(1);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function questionsEqual(arr1, arr2) {\r",
+							"    if (arr1.length !== arr2.length) return false;\r",
+							"\r",
+							"    for (let i = 0; i < arr1.length; i++) {\r",
+							"        const obj1 = arr1[i];\r",
+							"        const obj2 = arr2[i];\r",
+							"\r",
+							"        // Проверяем значения questionText\r",
+							"        if (obj1.questionText !== obj2.questionText) {\r",
+							"            return false;\r",
+							"        }\r",
+							"\r",
+							"        // Проверяем значения answers\r",
+							"        if (obj1.answers.length !== obj2.answers.length) {\r",
+							"            return false;\r",
+							"        }\r",
+							"        \r",
+							"        for (let j = 0; j < obj1.answers.length; j++) {\r",
+							"            const answer1 = obj1.answers[j];\r",
+							"            const answer2 = obj2.answers[j];\r",
+							"\r",
+							"            // Проверяем значения answerText и is_correct\r",
+							"            if (answer1.answerText !== answer2.answerText || answer1.is_correct !== answer2.is_correct) {\r",
+							"                return false;\r",
+							"            }\r",
+							"        }\r",
+							"    }\r",
+							"\r",
+							"    return true;\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/quiz",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"quiz"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
