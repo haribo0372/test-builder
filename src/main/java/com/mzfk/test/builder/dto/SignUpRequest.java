@@ -24,4 +24,11 @@ public class SignUpRequest {
     @Schema(description = "Пароль", example = "my_1secret1_password")
     @Size(max = 255, message = "Длина пароля должна быть не более 255 символов")
     private String password;
+
+    public SignUpRequest(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        System.out.println("ЭТО ПОЛЬЗОВАТЕДЬ : " + username + " " + this.getPassword() + " " + this.getEmail());
+    }
 }

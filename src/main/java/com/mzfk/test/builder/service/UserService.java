@@ -1,20 +1,13 @@
 package com.mzfk.test.builder.service;
 
-import com.mzfk.test.builder.dto.quiz.QuizResponse;
-import com.mzfk.test.builder.dto.quiz.mapper.QuizMapper;
-import com.mzfk.test.builder.model.Quiz;
 import com.mzfk.test.builder.model.Role;
 import com.mzfk.test.builder.model.User;
 import com.mzfk.test.builder.repository.UserRepository;
-import com.mzfk.test.builder.util.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Objects;
 
 
 @Service

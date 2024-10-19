@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Builder
@@ -21,30 +22,34 @@ public class Question {
     @Column(name = "question", nullable = false)
     private String questionText;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<QuestionAnswer> questionAnswers;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Answer> answers;
 
     public Question() {
-        questionAnswers = new HashSet<>();
+        answers = new HashSet<>();
     }
 
-    public Question(Long id, String questionText, Set<QuestionAnswer> questionAnswers) {
+    public Question(Long id, String questionText, Set<Answer> answers) {
         this.id = id;
         this.questionText = questionText;
-        this.questionAnswers =
-                questionAnswers == null ? new HashSet<>() : questionAnswers;
+        this.answers =
+                answers == null ? new HashSet<>() : answers;
     }
 
-    public void addQuestionAnswer(QuestionAnswer questionAnswer) {
-        questionAnswers.add(questionAnswer);
+    public void addAnswer(Answer answer) {
+        answers.add(answer);
     }
 
     @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", questionText='" + questionText + '\'' +
-                ", questionAnswers=" + questionAnswers +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return Objects.equals(id, question.id) && Objects.equals(questionText, question.questionText);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, questionText);
     }
 }

@@ -2,14 +2,16 @@ package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "answer")
 public class Answer {
     @Id
@@ -21,28 +23,20 @@ public class Answer {
     @NotBlank(message = "Текст ответа не должен быть пустым")
     private String answerText;
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<QuestionAnswer> questionAnswers;
+    @Column(name = "isCorrect")
+    @NotNull(message = "Характер верности ответа должен быть определен (true - ответ верный; false - ответ неверный)")
+    private boolean isCorrect;
 
-    public void addQuestionAnswer(QuestionAnswer questionAnswer){
-        questionAnswers.add(questionAnswer);
-    }
-
-    public Answer() {
-    }
-
-    public Answer(Long id, String answerText, Set<QuestionAnswer> questionAnswers) {
-        this.id = id;
-        this.answerText = answerText;
-        this.questionAnswers = questionAnswers == null ? new HashSet<>() : questionAnswers;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Answer answer = (Answer) o;
+        return Objects.equals(id, answer.id) && Objects.equals(answerText, answer.answerText);
     }
 
     @Override
-    public String toString() {
-        return "Answer{" +
-                "id=" + id +
-                ", answerText='" + answerText + '\'' +
-                ", questionAnswers=" + questionAnswers+
-                '}';
+    public int hashCode() {
+        return Objects.hash(id, answerText);
     }
 }

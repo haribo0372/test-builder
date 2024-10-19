@@ -1,7 +1,6 @@
 package com.mzfk.test.builder.service;
 
 import com.mzfk.test.builder.model.Answer;
-import com.mzfk.test.builder.model.QuestionAnswer;
 import com.mzfk.test.builder.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
