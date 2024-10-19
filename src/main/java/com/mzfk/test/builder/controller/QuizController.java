@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +66,7 @@ public class QuizController {
 
     @GetMapping("/{quizId}")
     @Operation(
-            description = "Получение квиза по id, если актуальный пользователь владеет этим квизом",
+            description = "Получение квиза по id=${quizId}",
             summary = "Получение квиза по id",
             method = "GET"
     )
@@ -77,17 +76,18 @@ public class QuizController {
 
     @DeleteMapping("/{quizId}")
     @Operation(
-            description = "Удаление квиза по id, если актуальный пользователь владеет этим квизом",
+            description = "Удаление квиза с id=${quizId}",
             summary = "Удаление квиза по id",
             method = "DELETE"
     )
-    public ResponseEntity<Response> deleteById(@PathVariable Long quizId) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long quizId) {
         userQuizService.deleteQuizById(quizId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{quizId}")
     @Operation(
+            description = "Добавление вопроса в квиз с id=${quizId}",
             summary = "Добавление вопроса в квиз",
             method = "POST",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -106,6 +106,8 @@ public class QuizController {
 
     @PutMapping("{quizId}")
     @Operation(
+            description = "Обновление вопроса в квизе с id=${quizId}," +
+                    " если вопрос не принадлежит данному квизу, генерируется ошибка",
             summary = "Обновление вопроса в квизе",
             method = "PUT",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -123,7 +125,7 @@ public class QuizController {
 
     @GetMapping("{quizId}/{questionId}")
     @Operation(
-            description = "Получение вопроса по id, который принадлежит определенному квизу",
+            description = "Получение вопроса по id=${questionId}, который принадлежит квизус id=${quizId}",
             summary = "Получение вопроса по id",
             method = "GET"
     )
@@ -134,6 +136,8 @@ public class QuizController {
 
     @PostMapping("{quizId}/{questionId}")
     @Operation(
+            description = "Добавление варианта ответа в вопрос с id=${questionId}," +
+                    " который принадлежит квизу с id=${quizId}",
             summary = "Добавление варианта ответа в вопрос",
             method = "POST",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -149,6 +153,18 @@ public class QuizController {
                                                     @RequestBody @Valid Answer answer) {
 
         return ResponseEntity.ok(userQuizService.addAnswerToQuestion(quizId, questionId, answer));
+    }
+
+    @DeleteMapping("{quizId}/{questionId}")
+    @Operation(
+            description = "Удаление вопроса по id=${questionId}, который принадлежит квизу с id=${quizId}",
+            summary = "Удаление вопроса",
+            method = "DELETE"
+    )
+    public ResponseEntity<Void> deleteQuestion(@PathVariable Long quizId,
+                                               @PathVariable Long questionId) {
+        userQuizService.deleteQuizQuestionById(quizId, questionId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

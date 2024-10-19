@@ -3,10 +3,12 @@ package com.mzfk.test.builder.service;
 import com.mzfk.test.builder.model.Question;
 import com.mzfk.test.builder.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class QuestionService {
@@ -23,11 +25,13 @@ public class QuestionService {
 
     public void save(final Question question) {
         question.getAnswers().forEach(answerService::save);
-        questionRepository.save(question);
+        Question savedQuestion = questionRepository.save(question);
+        log.info("Вопрос с id={} сохранен", savedQuestion.getId());
     }
 
     public void delete(final Question question){
         questionRepository.delete(question);
+        log.info("Вопрос с id={} удален", question.getId());
     }
 
 }

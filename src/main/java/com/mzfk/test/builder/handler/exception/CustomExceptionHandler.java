@@ -35,22 +35,24 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundExceptions(NotFoundException ex) {
-        log.warn(ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("Запрашиваемый ресурс не найден", ex.getMessage());
+        log.warn("{} : {}", errorResponse.description, errorResponse.error);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(AccessException.class)
+    public ResponseEntity<ErrorResponse> handleAccessException(AccessException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Отказ в доступе", ex.getMessage());
+        log.error("{} : {}", errorResponse.description, errorResponse.error);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleThrowable(Throwable ex) {
         ErrorResponse errorResponse = new ErrorResponse("Произошла непредвиденная ошибка", ex.getMessage());
-        ex.printStackTrace();
+        log.error("{} : {}", errorResponse.description, errorResponse.error);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(AccessException.class)
-    public ResponseEntity<ErrorResponse> handleAccessException(AccessException ex) {
-        ErrorResponse errorResponse = new ErrorResponse("Отказ в доступе", ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     @Data
