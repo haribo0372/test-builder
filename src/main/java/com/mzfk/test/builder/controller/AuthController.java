@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.mzfk.test.builder.dto.JwtAuthenticationResponse;
-import com.mzfk.test.builder.dto.SignInRequest;
-import com.mzfk.test.builder.dto.SignUpRequest;
+import com.mzfk.test.builder.dto.auth.JwtAuthenticationResponse;
+import com.mzfk.test.builder.dto.auth.SignInRequest;
+import com.mzfk.test.builder.dto.auth.SignUpRequest;
 import com.mzfk.test.builder.service.AuthenticationService;
 
 

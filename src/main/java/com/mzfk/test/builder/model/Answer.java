@@ -1,8 +1,6 @@
 package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Objects;
@@ -20,12 +18,10 @@ public class Answer {
     private Long id;
 
     @Column(name = "answerText")
-    @NotBlank(message = "Текст ответа не должен быть пустым")
     private String answerText;
 
     @Column(name = "isCorrect")
-    @NotNull(message = "Характер верности ответа должен быть определен (true - ответ верный; false - ответ неверный)")
-    private boolean isCorrect;
+    private Boolean isCorrect;
 
     @Override
     public boolean equals(Object o) {

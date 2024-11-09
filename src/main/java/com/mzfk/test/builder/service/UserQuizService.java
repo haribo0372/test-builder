@@ -49,7 +49,7 @@ public class UserQuizService {
         quizService.deleteQuiz(quizId);
     }
 
-    public void deleteQuizQuestionById(Long quizId, Long questionId) {
+    public void deleteQuestionById(Long quizId, Long questionId) {
         Quiz quiz = getQuizById(quizId);
         Question question = getQuestionById(quizId, questionId);
         quiz.getQuestions().remove(question);
@@ -78,6 +78,19 @@ public class UserQuizService {
         question.addAnswer(answer);
         return saveQuiz(quiz);
     }
+
+//    public Quiz deleteAnswerById(Long quizId, Long questionId, Long answerId) {
+//        Quiz quiz = getQuizById(quizId);
+//        Question question = getQuestionById(quizId, questionId);
+//        Answer answer = question.getAnswers().stream()
+//                .filter(i -> i.getId().equals(answerId))
+//                .findAny()
+//                .orElseThrow(() -> new NotFoundException(
+//                        format("Варианта ответа с id=%d у вопроса с id=%d не существует", answerId, questionId)));
+//
+//        question.removeAnswer(answer);
+//        return saveQuiz(quiz);
+//    }
 
     public Collection<Quiz> getAllQuizzes() {
         return currentUser().getQuizzes();

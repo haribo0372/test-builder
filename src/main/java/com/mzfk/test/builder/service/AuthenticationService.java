@@ -2,9 +2,9 @@ package com.mzfk.test.builder.service;
 
 import com.mzfk.test.builder.model.Role;
 import com.mzfk.test.builder.model.User;
-import com.mzfk.test.builder.dto.JwtAuthenticationResponse;
-import com.mzfk.test.builder.dto.SignInRequest;
-import com.mzfk.test.builder.dto.SignUpRequest;
+import com.mzfk.test.builder.dto.auth.JwtAuthenticationResponse;
+import com.mzfk.test.builder.dto.auth.SignInRequest;
+import com.mzfk.test.builder.dto.auth.SignUpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,7 +57,6 @@ public class AuthenticationService {
                 .loadUserByUsername(request.getUsername());
 
         var jwt = jwtService.generateToken(user);
-        System.out.println(jwt);
         return new JwtAuthenticationResponse(jwt);
     }
 }

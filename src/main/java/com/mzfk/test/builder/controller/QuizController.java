@@ -1,5 +1,15 @@
 package com.mzfk.test.builder.controller;
 
+import com.mzfk.test.builder.dto.answer.AnswerMapper;
+import com.mzfk.test.builder.dto.answer.RequestAnswerDto;
+import com.mzfk.test.builder.dto.question.QuestionMapper;
+import com.mzfk.test.builder.dto.question.RequestCreateQuestionDto;
+import com.mzfk.test.builder.dto.question.RequestUpdateQuestionDto;
+import com.mzfk.test.builder.dto.question.ResponseQuestionDto;
+import com.mzfk.test.builder.dto.quiz.QuizMapper;
+import com.mzfk.test.builder.dto.quiz.RequestCreateQuiz;
+import com.mzfk.test.builder.dto.quiz.RequestUpdateQuiz;
+import com.mzfk.test.builder.dto.quiz.ResponseQuizDto;
 import com.mzfk.test.builder.model.Answer;
 import com.mzfk.test.builder.model.Question;
 import com.mzfk.test.builder.model.Quiz;
@@ -16,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -27,8 +38,11 @@ public class QuizController {
 
     @GetMapping
     @Operation(summary = "Получение всех квизов пользователя", method = "GET")
-    public ResponseEntity<Collection<Quiz>> findAll() {
-        return ResponseEntity.ok(userQuizService.getAllQuizzes());
+    public ResponseEntity<Collection<ResponseQuizDto>> findAll() {
+        return ResponseEntity.ok(
+                userQuizService.getAllQuizzes().stream()
+                        .map(QuizMapper::toDto)
+                        .collect(Collectors.toSet()));
     }
 
     @PostMapping
@@ -38,14 +52,15 @@ public class QuizController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = Quiz.class),
+                            schema = @Schema(implementation = RequestCreateQuiz.class),
                             mediaType = "application/json"
                     )
             )
     )
-    public ResponseEntity<Quiz> create(@RequestBody @Valid Quiz quiz) {
-        System.out.println(quiz);
-        return new ResponseEntity<>(userQuizService.saveQuiz(quiz), HttpStatus.CREATED);
+    public ResponseEntity<ResponseQuizDto> create(@RequestBody @Valid RequestCreateQuiz requestCreateQuiz) {
+        Quiz quiz = QuizMapper.fromDto(requestCreateQuiz);
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.saveQuiz(quiz));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -55,13 +70,15 @@ public class QuizController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = Quiz.class),
+                            schema = @Schema(implementation = RequestUpdateQuiz.class),
                             mediaType = "application/json"
                     )
             )
     )
-    public ResponseEntity<Quiz> update(@RequestBody @Valid Quiz quiz) {
-        return ResponseEntity.ok(userQuizService.saveQuiz(quiz));
+    public ResponseEntity<ResponseQuizDto> update(@RequestBody @Valid RequestUpdateQuiz requestUpdateQuiz) {
+        Quiz quiz = QuizMapper.fromDto(requestUpdateQuiz);
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.saveQuiz(quiz));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{quizId}")
@@ -70,8 +87,9 @@ public class QuizController {
             summary = "Получение квиза по id",
             method = "GET"
     )
-    public ResponseEntity<Quiz> findById(@PathVariable Long quizId) {
-        return ResponseEntity.ok(userQuizService.getQuizById(quizId));
+    public ResponseEntity<ResponseQuizDto> findById(@PathVariable Long quizId) {
+        return ResponseEntity.ok(
+                QuizMapper.toDto(userQuizService.getQuizById(quizId)));
     }
 
     @DeleteMapping("/{quizId}")
@@ -93,15 +111,16 @@ public class QuizController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = Question.class),
+                            schema = @Schema(implementation = RequestCreateQuestionDto.class),
                             mediaType = "application/json"
                     )
             )
     )
-    public ResponseEntity<Quiz> addQuestionToQuiz(@PathVariable Long quizId,
-                                                  @RequestBody @Valid Question question) {
-        return ResponseEntity.ok(
-                userQuizService.addQuestionToQuiz(quizId, question));
+    public ResponseEntity<ResponseQuizDto> addQuestionToQuiz(@PathVariable Long quizId,
+                                                             @RequestBody @Valid RequestCreateQuestionDto requestQuestion) {
+        Question question = QuestionMapper.fromDto(requestQuestion);
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.addQuestionToQuiz(quizId, question));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("{quizId}")
@@ -113,14 +132,16 @@ public class QuizController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = Question.class),
+                            schema = @Schema(implementation = RequestUpdateQuestionDto.class),
                             mediaType = "application/json"
                     )
             )
     )
-    public ResponseEntity<Quiz> updateQuizQuestion(@PathVariable Long quizId,
-                                                   @RequestBody @Valid Question question) {
-        return ResponseEntity.ok(userQuizService.updateQuizQuestion(quizId, question));
+    public ResponseEntity<ResponseQuizDto> updateQuizQuestion(@PathVariable Long quizId,
+                                                              @RequestBody @Valid RequestUpdateQuestionDto requestQuestion) {
+        Question question = QuestionMapper.fromDto(requestQuestion);
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.updateQuizQuestion(quizId, question));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("{quizId}/{questionId}")
@@ -129,9 +150,22 @@ public class QuizController {
             summary = "Получение вопроса по id",
             method = "GET"
     )
-    public ResponseEntity<Question> getQuestion(@PathVariable Long quizId,
-                                                @PathVariable Long questionId) {
-        return ResponseEntity.ok(userQuizService.getQuestionById(quizId, questionId));
+    public ResponseEntity<ResponseQuestionDto> getQuestion(@PathVariable Long quizId,
+                                                           @PathVariable Long questionId) {
+        Question question = userQuizService.getQuestionById(quizId, questionId);
+        return ResponseEntity.ok(QuestionMapper.toDto(question));
+    }
+
+    @DeleteMapping("{quizId}/{questionId}")
+    @Operation(
+            description = "Удаление вопроса по id=${questionId}, который принадлежит квизу с id=${quizId}",
+            summary = "Удаление вопроса",
+            method = "DELETE"
+    )
+    public ResponseEntity<Void> deleteQuestion(@PathVariable Long quizId,
+                                               @PathVariable Long questionId) {
+        userQuizService.deleteQuestionById(quizId, questionId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("{quizId}/{questionId}")
@@ -143,28 +177,17 @@ public class QuizController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = Answer.class),
+                            schema = @Schema(implementation = RequestAnswerDto.class),
                             mediaType = "application/json"
                     )
             )
     )
-    public ResponseEntity<Quiz> addAnswerToQuestion(@PathVariable Long quizId,
-                                                    @PathVariable Long questionId,
-                                                    @RequestBody @Valid Answer answer) {
-
-        return ResponseEntity.ok(userQuizService.addAnswerToQuestion(quizId, questionId, answer));
-    }
-
-    @DeleteMapping("{quizId}/{questionId}")
-    @Operation(
-            description = "Удаление вопроса по id=${questionId}, который принадлежит квизу с id=${quizId}",
-            summary = "Удаление вопроса",
-            method = "DELETE"
-    )
-    public ResponseEntity<Void> deleteQuestion(@PathVariable Long quizId,
-                                               @PathVariable Long questionId) {
-        userQuizService.deleteQuizQuestionById(quizId, questionId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<ResponseQuizDto> addAnswerToQuestion(@PathVariable Long quizId,
+                                                               @PathVariable Long questionId,
+                                                               @RequestBody @Valid RequestAnswerDto requestAnswerDto) {
+        Answer answer = AnswerMapper.fromDto(requestAnswerDto);
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.addAnswerToQuestion(quizId, questionId, answer));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 }

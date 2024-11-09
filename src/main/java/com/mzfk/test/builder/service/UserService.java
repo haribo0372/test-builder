@@ -23,7 +23,7 @@ public class UserService {
      */
     public User save(User user) {
         User savedUser = repository.save(user);
-        log.info("Пользователь: id={} сохранен", savedUser.getId());
+        log.info("Пользователь с id={} сохранен", savedUser.getId());
         return savedUser;
     }
 

@@ -21,7 +21,6 @@ public class Quiz {
     private Long id;
 
     @Column(name = "title")
-    @NotBlank(message = "Название теста не должно быть пустым")
     private String title;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

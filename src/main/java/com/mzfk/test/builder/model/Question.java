@@ -1,8 +1,9 @@
 package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,7 +19,6 @@ public class Question {
     @Column(name = "question_id")
     private Long id;
 
-    @NotBlank(message = "Текст вопроса не должно быть пустым")
     @Column(name = "question", nullable = false)
     private String questionText;
 
@@ -38,6 +38,10 @@ public class Question {
 
     public void addAnswer(Answer answer) {
         answers.add(answer);
+    }
+
+    public void removeAnswer(Answer answer) {
+        answers.remove(answer);
     }
 
     @Override
