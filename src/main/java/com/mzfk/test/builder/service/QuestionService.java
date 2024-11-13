@@ -39,15 +39,24 @@ public class QuestionService {
     public void deleteAnswer(final Long questionId, final Long answerId) {
         Question question = findById(questionId)
                 .orElseThrow(
-                        () -> new NotFoundException(String.format("Вопрос с id=%d не найден", questionId)));
+                        () -> {
+                            String message = String.format("Question{ id=%d } не найден", questionId);
+                            log.info(message);
+                            return new NotFoundException(message);
+                        });
 
         Answer answer = question.getAnswers().stream()
                 .filter(awr -> awr.getId().equals(answerId))
                 .findAny()
                 .orElseThrow(
-                        () -> new NotFoundException(String.format("Вариант ответа с id=%d не найден", answerId)));
+                        () -> {
+                            String message = String.format("Answer{ id=%d } не найден", answerId);
+                            log.info(message);
+                            return new NotFoundException(message);
+                        });
 
-        question.getAnswers().remove(answer);
+        if (question.getAnswers().remove(answer))
+            log.info("Answer{id={}} успешно удален у Question{id={}}", answerId, questionId);
         questionRepository.save(question);
     }
 }

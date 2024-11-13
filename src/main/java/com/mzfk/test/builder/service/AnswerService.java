@@ -16,7 +16,7 @@ public class AnswerService {
 
     public Answer save(Answer answer) {
         Answer savedAnswer = answerRepository.save(answer);
-        log.info("Вариант ответа с id={} сохранен", savedAnswer.getId());
+        log.info("{} сохранен", savedAnswer);
         return savedAnswer;
     }
 

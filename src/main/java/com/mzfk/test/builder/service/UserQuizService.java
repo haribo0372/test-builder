@@ -26,6 +26,11 @@ public class UserQuizService {
         return savedQuiz;
     }
 
+    public Quiz updateQuiz(final Quiz quiz){
+        getQuizById(quiz.getId());
+        return quizService.updateQuiz(quiz);
+    }
+
     public Quiz updateQuizQuestion(final Long quizId, final Question question) {
         getQuestionById(quizId, question.getId());
         Quiz quiz = getQuizById(quizId);
@@ -46,6 +51,7 @@ public class UserQuizService {
     }
 
     public void deleteQuizById(Long quizId) {
+        getQuizById(quizId);
         quizService.deleteQuiz(quizId);
     }
 

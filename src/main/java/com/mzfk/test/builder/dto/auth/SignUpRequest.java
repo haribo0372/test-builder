@@ -29,6 +29,5 @@ public class SignUpRequest {
         this.username = username;
         this.email = email;
         this.password = password;
-        System.out.println("ЭТО ПОЛЬЗОВАТЕДЬ : " + username + " " + this.getPassword() + " " + this.getEmail());
     }
 }

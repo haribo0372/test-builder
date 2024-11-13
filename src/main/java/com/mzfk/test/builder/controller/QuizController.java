@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,10 +40,12 @@ public class QuizController {
     @GetMapping
     @Operation(summary = "Получение всех квизов пользователя", method = "GET")
     public ResponseEntity<Collection<ResponseQuizDto>> findAll() {
-        return ResponseEntity.ok(
-                userQuizService.getAllQuizzes().stream()
-                        .map(QuizMapper::toDto)
-                        .collect(Collectors.toSet()));
+        log.debug("GET /quiz for getting all quizzes started");
+        Set<ResponseQuizDto> response = userQuizService.getAllQuizzes().stream()
+                .map(QuizMapper::toDto)
+                .collect(Collectors.toSet());
+        log.debug("GET /quiz for getting all quizzes ended");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -58,8 +61,10 @@ public class QuizController {
             )
     )
     public ResponseEntity<ResponseQuizDto> create(@RequestBody @Valid RequestCreateQuiz requestCreateQuiz) {
+        log.debug("POST /quiz create quiz with request body = {} started", requestCreateQuiz);
         Quiz quiz = QuizMapper.fromDto(requestCreateQuiz);
         ResponseQuizDto response = QuizMapper.toDto(userQuizService.saveQuiz(quiz));
+        log.debug("POST /quiz create quiz with request body = {} ended", requestCreateQuiz);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -76,8 +81,10 @@ public class QuizController {
             )
     )
     public ResponseEntity<ResponseQuizDto> update(@RequestBody @Valid RequestUpdateQuiz requestUpdateQuiz) {
+        log.debug("PUT /quiz create quiz with request body = {} started", requestUpdateQuiz);
         Quiz quiz = QuizMapper.fromDto(requestUpdateQuiz);
-        ResponseQuizDto response = QuizMapper.toDto(userQuizService.saveQuiz(quiz));
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.updateQuiz(quiz));
+        log.debug("PUT /quiz create quiz with request body = {} ended", requestUpdateQuiz);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -88,8 +95,11 @@ public class QuizController {
             method = "GET"
     )
     public ResponseEntity<ResponseQuizDto> findById(@PathVariable Long quizId) {
-        return ResponseEntity.ok(
-                QuizMapper.toDto(userQuizService.getQuizById(quizId)));
+        log.debug("GET /quiz/{} get quiz by id started", quizId);
+        Quiz foundQuiz = userQuizService.getQuizById(quizId);
+        ResponseQuizDto response = QuizMapper.toDto(foundQuiz);
+        log.debug("GET /quiz/{} get quiz by id ended", quizId);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{quizId}")
@@ -99,7 +109,9 @@ public class QuizController {
             method = "DELETE"
     )
     public ResponseEntity<Void> deleteById(@PathVariable Long quizId) {
+        log.debug("DELETE /quiz/{} delete quiz by id started", quizId);
         userQuizService.deleteQuizById(quizId);
+        log.debug("DELETE /quiz/{} delete quiz by id ended", quizId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -118,8 +130,10 @@ public class QuizController {
     )
     public ResponseEntity<ResponseQuizDto> addQuestionToQuiz(@PathVariable Long quizId,
                                                              @RequestBody @Valid RequestCreateQuestionDto requestQuestion) {
+        log.debug("POST /quiz/{} add {} to Quiz{ id = {} } started", quizId, requestQuestion, quizId);
         Question question = QuestionMapper.fromDto(requestQuestion);
         ResponseQuizDto response = QuizMapper.toDto(userQuizService.addQuestionToQuiz(quizId, question));
+        log.debug("POST /quiz/{} add {} to Quiz{ id = {} } ended", quizId, requestQuestion, quizId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -139,8 +153,10 @@ public class QuizController {
     )
     public ResponseEntity<ResponseQuizDto> updateQuizQuestion(@PathVariable Long quizId,
                                                               @RequestBody @Valid RequestUpdateQuestionDto requestQuestion) {
+        log.debug("PUT /quiz/{} update {} of Quiz{ id = {} } started", quizId, requestQuestion, quizId);
         Question question = QuestionMapper.fromDto(requestQuestion);
         ResponseQuizDto response = QuizMapper.toDto(userQuizService.updateQuizQuestion(quizId, question));
+        log.debug("PUT /quiz/{} update {} of Quiz{ id = {} } ended", quizId, requestQuestion, quizId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

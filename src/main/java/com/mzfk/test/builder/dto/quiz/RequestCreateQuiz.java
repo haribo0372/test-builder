@@ -14,4 +14,5 @@ public class RequestCreateQuiz {
     private String title;
 
     private final Set<RequestCreateQuestionDto> questions;
+
 }

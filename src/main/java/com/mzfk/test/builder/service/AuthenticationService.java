@@ -6,12 +6,13 @@ import com.mzfk.test.builder.dto.auth.JwtAuthenticationResponse;
 import com.mzfk.test.builder.dto.auth.SignInRequest;
 import com.mzfk.test.builder.dto.auth.SignUpRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -37,6 +38,7 @@ public class AuthenticationService {
 
         userService.create(user);
         var jwt = jwtService.generateToken(user);
+        log.info("Пользователь с username='{}' успешно зарегистрирован", request.getUsername());
         return new JwtAuthenticationResponse(jwt);
     }
 
@@ -57,6 +59,7 @@ public class AuthenticationService {
                 .loadUserByUsername(request.getUsername());
 
         var jwt = jwtService.generateToken(user);
+        log.info("Пользователь с username='{}' успешно вошел", request.getUsername());
         return new JwtAuthenticationResponse(jwt);
     }
 }

@@ -9,7 +9,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -19,4 +19,8 @@ token:
     key: ${TOKEN_KEY}
 
 org.springframework.boot.autoconfigure.security: INFO
-logging.level.org.springframework.security: INFO
+logging:
+  level:
+    com.mzfk.test.builder: DEBUG
+    org.springframework.security: INFO
+    zalando.logbook: DEBUG

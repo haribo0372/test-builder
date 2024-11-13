@@ -21,10 +21,16 @@ public class QuizService {
         return savedQuiz;
     }
 
+    public Quiz updateQuiz(Quiz quiz){
+        Quiz storageQuiz = findById(quiz.getId());
+        storageQuiz.setTitle(quiz.getTitle());
+        return quizRepository.save(storageQuiz);
+    }
+
     public void deleteQuiz(Long id) {
         Quiz quiz = findById(id);
-        quiz.getQuestions().forEach(questionService::delete);
-        quizRepository.delete(quiz);
+//        quiz.getQuestions().forEach(questionService::delete);
+        quizRepository.deleteById(id);
         log.info("Квиз с id = {} удален", quiz.getId());
     }
 
