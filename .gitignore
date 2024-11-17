@@ -34,3 +34,4 @@ build/
 /.env
 /script_db_scheme.txt
 /test-create-quiz.json
+/comands.txt
