@@ -6,6 +6,8 @@ spring:
     driverClassName: org.h2.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  h2.console.enabled: true
+  h2.console.path: /h2-console
   jpa:
     hibernate:
       ddl-auto: create-drop
