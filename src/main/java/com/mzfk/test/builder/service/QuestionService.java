@@ -7,6 +7,7 @@ import com.mzfk.test.builder.util.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public class QuestionService {
         return questionRepository.findByQuestionText(questionText);
     }
 
+    @Transactional
     public void save(final Question question) {
         question.getAnswers().forEach(answerService::save);
         Question savedQuestion = questionRepository.save(question);

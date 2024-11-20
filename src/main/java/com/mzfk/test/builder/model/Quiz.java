@@ -23,10 +23,15 @@ public class Quiz {
     @Column(name = "title")
     private String title;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<Question> questions = new HashSet<>();
 
     public void addQuestion(Question question){
+        question.setQuiz(this);
         questions.add(question);
     }
 

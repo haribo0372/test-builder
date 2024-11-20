@@ -3,7 +3,9 @@ package com.mzfk.test.builder.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,9 +40,8 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Quiz> quizzes;
-
 
     public User() {
         quizzes = new HashSet<>();
@@ -57,7 +58,7 @@ public class User implements UserDetails {
                 quizzes == null ? new HashSet<>() : quizzes;
     }
 
-    public void addQuiz(Quiz quiz){
+    public void addQuiz(Quiz quiz) {
         quizzes.add(quiz);
     }
 

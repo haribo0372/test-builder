@@ -14,12 +14,13 @@ import java.util.stream.Collectors;
 public class QuestionMapper {
 
     public static Question fromDto(RequestCreateQuestionDto questionDto) {
-        Set<Answer> answers = questionDto.getAnswers()
+        Question question = new Question(null, questionDto.getQuestionText());
+        questionDto.getAnswers()
                 .stream()
                 .map(AnswerMapper::fromDto)
-                .collect(Collectors.toSet());
+                .forEach(question::addAnswer);
 
-        return new Question(null, questionDto.getQuestionText(), answers);
+        return question;
     }
 
     public static Question fromDto(RequestUpdateQuestionDto questionDto) {

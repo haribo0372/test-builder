@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.util.Objects;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,6 +21,16 @@ public class Answer {
 
     @Column(name = "isCorrect")
     private Boolean isCorrect;
+
+    @ManyToOne
+    @JoinColumn(name = "question_id", nullable = false)
+    private Question question;
+
+    public Answer(Long id, String answerText, Boolean isCorrect) {
+        this.id = id;
+        this.answerText = answerText;
+        this.isCorrect = isCorrect;
+    }
 
     @Override
     public boolean equals(Object o) {

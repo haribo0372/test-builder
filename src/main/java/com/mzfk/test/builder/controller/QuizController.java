@@ -41,9 +41,7 @@ public class QuizController {
     @Operation(summary = "Получение всех квизов пользователя", method = "GET")
     public ResponseEntity<Collection<ResponseQuizDto>> findAll() {
         log.debug("GET /quiz for getting all quizzes started");
-        Set<ResponseQuizDto> response = userQuizService.getAllQuizzes().stream()
-                .map(QuizMapper::toDto)
-                .collect(Collectors.toSet());
+        Set<ResponseQuizDto> response = QuizMapper.toDto(userQuizService.getAllQuizzes());
         log.debug("GET /quiz for getting all quizzes ended");
         return ResponseEntity.ok(response);
     }

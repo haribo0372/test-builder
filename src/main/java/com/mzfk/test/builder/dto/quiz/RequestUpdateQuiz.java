@@ -11,6 +11,6 @@ public class RequestUpdateQuiz {
     @NotNull(message = "id должен быть задан")
     private Long id;
 
-    @NotBlank(message = "Название теста не должно быть пустым")
+    @NotBlank(message = "Название квиза не должно быть пустым")
     private String title;
 }
