@@ -1,13 +1,10 @@
 package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Objects;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,12 +17,20 @@ public class Answer {
     private Long id;
 
     @Column(name = "answerText")
-    @NotBlank(message = "Текст ответа не должен быть пустым")
     private String answerText;
 
     @Column(name = "isCorrect")
-    @NotNull(message = "Характер верности ответа должен быть определен (true - ответ верный; false - ответ неверный)")
-    private boolean isCorrect;
+    private Boolean isCorrect;
+
+    @ManyToOne
+    @JoinColumn(name = "question_id", nullable = false)
+    private Question question;
+
+    public Answer(Long id, String answerText, Boolean isCorrect) {
+        this.id = id;
+        this.answerText = answerText;
+        this.isCorrect = isCorrect;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -38,5 +43,14 @@ public class Answer {
     @Override
     public int hashCode() {
         return Objects.hash(id, answerText);
+    }
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", answerText='" + answerText + '\'' +
+                ", isCorrect=" + isCorrect +
+                '}';
     }
 }

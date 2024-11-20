@@ -1,4 +1,4 @@
-package com.mzfk.test.builder.dto;
+package com.mzfk.test.builder.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -22,13 +22,13 @@ public class SignUpRequest {
     private String email;
 
     @Schema(description = "Пароль", example = "my_1secret1_password")
-    @Size(max = 255, message = "Длина пароля должна быть не более 255 символов")
+    @Size(min = 7, max = 255, message = "Пароль должен содержать от 7 до 255 символов")
+    @NotBlank(message = "Пароль не может быть пустыми")
     private String password;
 
     public SignUpRequest(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        System.out.println("ЭТО ПОЛЬЗОВАТЕДЬ : " + username + " " + this.getPassword() + " " + this.getEmail());
     }
 }

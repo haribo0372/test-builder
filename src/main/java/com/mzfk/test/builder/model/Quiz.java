@@ -21,13 +21,17 @@ public class Quiz {
     private Long id;
 
     @Column(name = "title")
-    @NotBlank(message = "Название теста не должно быть пустым")
     private String title;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<Question> questions = new HashSet<>();
 
     public void addQuestion(Question question){
+        question.setQuiz(this);
         questions.add(question);
     }
 

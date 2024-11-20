@@ -3,43 +3,23 @@ package com.mzfk.test.builder.service;
 import com.mzfk.test.builder.model.Answer;
 import com.mzfk.test.builder.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
     private final AnswerRepository answerRepository;
 
-//    public Answer save(final Answer answer) {
-//        String answerText = answer.getAnswerText();
-//        return findByAnswerText(answerText)
-//                .orElseGet(() -> {
-//                    Answer newAnswer = Answer.builder()
-//                            .answerText(answerText)
-//                            .build();
-//                    return answerRepository.save(newAnswer);
-//                });
-//    }
-
-//    public void save(final QuestionAnswer questionAnswer) {
-//        Answer answer = save(questionAnswer.getAnswer());
-//        answer.addQuestionAnswer(questionAnswer);
-//        questionAnswer.setAnswer(answer);
-//
-//        save(answer);
-//    }
-
+    @Transactional
     public Answer save(Answer answer) {
-        Answer answer1;
-        try {
-            answer1 = answerRepository.save(answer);
-        } catch (Exception e) {
-            throw new RuntimeException(answer.toString() + " : " + e.getMessage());
-        }
-
-        return answer1;
+        Answer savedAnswer = answerRepository.save(answer);
+        log.info("{} сохранен", savedAnswer);
+        return savedAnswer;
     }
 
     public Optional<Answer> findById(final Long id) {

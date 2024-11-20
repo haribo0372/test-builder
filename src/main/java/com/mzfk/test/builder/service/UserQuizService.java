@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -21,10 +20,16 @@ public class UserQuizService {
     private final QuizService quizService;
 
     public Quiz saveQuiz(final Quiz quiz) {
+        quiz.setUser(currentUser());
         final Quiz savedQuiz = quizService.saveQuiz(quiz);
-        currentUser().addQuiz(savedQuiz);
+        currentUser().addQuiz(quiz);
         userService.save(currentUser());
         return savedQuiz;
+    }
+
+    public Quiz updateQuiz(final Quiz quiz){
+        getQuizById(quiz.getId());
+        return quizService.updateQuiz(quiz);
     }
 
     public Quiz updateQuizQuestion(final Long quizId, final Question question) {
@@ -47,7 +52,16 @@ public class UserQuizService {
     }
 
     public void deleteQuizById(Long quizId) {
-        quizService.deleteQuiz(quizId);
+        Quiz quiz = getQuizById(quizId);
+        currentUser().getQuizzes().remove(quiz);
+        userService.save(currentUser());
+    }
+
+    public void deleteQuestionById(Long quizId, Long questionId) {
+        Quiz quiz = getQuizById(quizId);
+        Question question = getQuestionById(quizId, questionId);
+        quiz.getQuestions().remove(question);
+        saveQuiz(quiz);
     }
 
     public Question getQuestionById(Long quizId, Long questionId) {
