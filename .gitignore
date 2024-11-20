@@ -35,3 +35,4 @@ build/
 /script_db_scheme.txt
 /test-create-quiz.json
 /comands.txt
+./docker-compose.yml

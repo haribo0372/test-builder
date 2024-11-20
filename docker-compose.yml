@@ -1,11 +1,23 @@
 version: '3.8'
 services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   app:
-    image: quiz-builder-image
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: alik8haribo/quiz-builder
+    build: .
     env_file:
       - .env
     ports:
       - "8080:8080"
+
+volumes:
+  pgdata:
