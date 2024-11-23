@@ -33,9 +33,12 @@ public class UserQuizService {
     }
 
     public Quiz updateQuizQuestion(final Long quizId, final Question question) {
-        getQuestionById(quizId, question.getId());
+        Question storageQuestion = getQuestionById(quizId, question.getId());
+        System.out.println("ANSWERS : " + question.getAnswers());
+        System.out.println("TITLE : " + question.getQuestionText());
+        System.out.println("Quiestion = " + storageQuestion.getId() + " его Quiz " + storageQuestion.getQuiz().getId());
         Quiz quiz = getQuizById(quizId);
-        quiz.addQuestion(question);
+        quiz.addQuestion(storageQuestion);
 
         return saveQuiz(quiz);
     }

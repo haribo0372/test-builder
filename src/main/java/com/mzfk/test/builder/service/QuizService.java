@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class QuizService {
     private final QuizRepository quizRepository;
-    private final QuestionService questionService;
 
     @Transactional
     public Quiz saveQuiz(Quiz quiz) {

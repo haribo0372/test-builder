@@ -24,7 +24,7 @@ public class QuestionMapper {
     }
 
     public static Question fromDto(RequestUpdateQuestionDto questionDto) {
-        Set<Answer> answers = questionDto.getAnswers()
+        Set<Answer> answers = questionDto.getAnswers() == null ? null : questionDto.getAnswers()
                 .stream()
                 .map(AnswerMapper::fromDto)
                 .collect(Collectors.toSet());

@@ -12,9 +12,8 @@ public class RequestAnswerDto {
     @NotBlank(message = "Текст ответа не должен быть пустым")
     private String answerText;
 
-    @JsonProperty("is_correct") // Указываем соответствие JSON-ключа
     @NotNull(
             message = "Характер верности ответа должен быть определен" +
                     " (true - ответ верный; false - ответ неверный)")
-    private Boolean correct;
+    private Boolean isCorrect;
 }

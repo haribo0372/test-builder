@@ -69,6 +69,7 @@ public class QuizController {
     @PutMapping
     @Operation(
             summary = "Изменение квиза",
+            description = "Изменить у квиза можно только поле title, вопросы и варианты ответа изменяются отдельно по другим маппингам",
             method = "PUT",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
@@ -88,8 +89,8 @@ public class QuizController {
 
     @GetMapping("/{quizId}")
     @Operation(
-            description = "Получение квиза по id=${quizId}",
             summary = "Получение квиза по id",
+            description = "Получение квиза по id=${quizId}",
             method = "GET"
     )
     public ResponseEntity<ResponseQuizDto> findById(@PathVariable Long quizId) {
@@ -103,7 +104,7 @@ public class QuizController {
     @DeleteMapping("/{quizId}")
     @Operation(
             description = "Удаление квиза с id=${quizId}",
-            summary = "Удаление квиза по id",
+            summary = "Удаление квиза по id, вместе с квизом удалятся все его вопросы и варианты ответов",
             method = "DELETE"
     )
     public ResponseEntity<Void> deleteById(@PathVariable Long quizId) {
@@ -115,8 +116,8 @@ public class QuizController {
 
     @PostMapping("/{quizId}")
     @Operation(
-            description = "Добавление вопроса в квиз с id=${quizId}",
             summary = "Добавление вопроса в квиз",
+            description = "Добавление вопроса в квиз с id=${quizId}",
             method = "POST",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
@@ -137,9 +138,9 @@ public class QuizController {
 
     @PutMapping("{quizId}")
     @Operation(
+            summary = "Обновление вопроса в квизе",
             description = "Обновление вопроса в квизе с id=${quizId}," +
                     " если вопрос не принадлежит данному квизу, генерируется ошибка",
-            summary = "Обновление вопроса в квизе",
             method = "PUT",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
