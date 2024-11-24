@@ -2,7 +2,6 @@ package com.mzfk.test.builder.service;
 
 import com.mzfk.test.builder.model.User;
 import com.mzfk.test.builder.service.base.jwt.JwtService;
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
