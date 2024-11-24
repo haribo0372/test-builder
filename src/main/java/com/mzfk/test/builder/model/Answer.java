@@ -1,20 +1,21 @@
 package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "answer")
-public class Answer {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Answer extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "answer_id")
-    private Long id;
+    protected Long id;
 
     @Column(name = "answerText")
     private String answerText;
@@ -37,7 +38,7 @@ public class Answer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Answer answer = (Answer) o;
-        return Objects.equals(id, answer.id) && Objects.equals(answerText, answer.answerText);
+        return super.equals(o) && Objects.equals(answerText, answer.answerText);
     }
 
     @Override

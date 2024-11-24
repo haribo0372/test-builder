@@ -1,21 +1,19 @@
 package com.mzfk.test.builder.dto.question;
 
-import com.mzfk.test.builder.dto.answer.RequestAnswerDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-import java.util.Set;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @AllArgsConstructor
 public class RequestUpdateQuestionDto {
-    @NotNull
+    @NotNull(message = "Id должен быть указан")
     private Long id;
 
     @NotBlank(message = "Текст вопроса не должно быть пустым")
     private String questionText;
-
-    private Set<RequestAnswerDto> answers;
 }

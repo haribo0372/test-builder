@@ -1,10 +1,11 @@
 package com.mzfk.test.builder.service;
 
-import com.mzfk.test.builder.model.Role;
-import com.mzfk.test.builder.model.User;
 import com.mzfk.test.builder.dto.auth.JwtAuthenticationResponse;
 import com.mzfk.test.builder.dto.auth.SignInRequest;
 import com.mzfk.test.builder.dto.auth.SignUpRequest;
+import com.mzfk.test.builder.model.Role;
+import com.mzfk.test.builder.model.User;
+import com.mzfk.test.builder.service.base.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,9 +16,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
-    private final UserService userService;
-    private final JwtService jwtService;
+public class AuthenticationServiceImpl implements AuthenticationService {
+    private final UserServiceImpl userService;
+    private final JwtServiceImpl jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
@@ -27,14 +28,15 @@ public class AuthenticationService {
      * @param request данные пользователя
      * @return токен
      */
+    @Override
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
 
-        var user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.ROLE_USER)
-                .build();
+        var user = new User(null,
+                request.getUsername(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getEmail(),
+                Role.ROLE_USER,
+                null);
 
         userService.create(user);
         var jwt = jwtService.generateToken(user);
@@ -48,6 +50,7 @@ public class AuthenticationService {
      * @param request данные пользователя
      * @return токен
      */
+    @Override
     public JwtAuthenticationResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),

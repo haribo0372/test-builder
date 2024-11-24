@@ -3,7 +3,6 @@ package com.mzfk.test.builder.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,15 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @Entity
-@Builder
 @Getter
 @Setter
 @Table(name = "t_users")
-public class User implements UserDetails {
+public class User extends BaseModel implements UserDetails {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @Column(name = "username", unique = true, nullable = false)
     @Size(min = 5, message = "Логин должен содержать не меньше 5 знаков")

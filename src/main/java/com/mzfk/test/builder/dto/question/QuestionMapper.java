@@ -3,7 +3,6 @@ package com.mzfk.test.builder.dto.question;
 
 import com.mzfk.test.builder.dto.answer.AnswerMapper;
 import com.mzfk.test.builder.dto.answer.ResponseAnswerDto;
-import com.mzfk.test.builder.model.Answer;
 import com.mzfk.test.builder.model.Question;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +23,7 @@ public class QuestionMapper {
     }
 
     public static Question fromDto(RequestUpdateQuestionDto questionDto) {
-        Set<Answer> answers = questionDto.getAnswers() == null ? null : questionDto.getAnswers()
-                .stream()
-                .map(AnswerMapper::fromDto)
-                .collect(Collectors.toSet());
-
-        return new Question(questionDto.getId(), questionDto.getQuestionText(), answers);
+        return new Question(questionDto.getId(), questionDto.getQuestionText(), null);
     }
 
     public static ResponseQuestionDto toDto(Question question) {

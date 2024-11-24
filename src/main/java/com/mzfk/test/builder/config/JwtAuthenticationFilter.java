@@ -1,7 +1,7 @@
 package com.mzfk.test.builder.config;
 
-import com.mzfk.test.builder.service.JwtService;
-import com.mzfk.test.builder.service.UserService;
+import com.mzfk.test.builder.service.JwtServiceImpl;
+import com.mzfk.test.builder.service.UserServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 import java.io.IOException;
 
 @Component
@@ -25,8 +24,8 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String HEADER_NAME = "Authorization";
-    private final JwtService jwtService;
-    private final UserService userService;
+    private final JwtServiceImpl jwtService;
+    private final UserServiceImpl userService;
 
     @Override
     protected void doFilterInternal(

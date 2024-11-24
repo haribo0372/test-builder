@@ -1,7 +1,8 @@
 package com.mzfk.test.builder.controller;
 
 import com.mzfk.test.builder.dto.answer.AnswerMapper;
-import com.mzfk.test.builder.dto.answer.RequestAnswerDto;
+import com.mzfk.test.builder.dto.answer.RequestCreateAnswerDto;
+import com.mzfk.test.builder.dto.answer.RequestUpdateAnswerDto;
 import com.mzfk.test.builder.dto.question.QuestionMapper;
 import com.mzfk.test.builder.dto.question.RequestCreateQuestionDto;
 import com.mzfk.test.builder.dto.question.RequestUpdateQuestionDto;
@@ -13,7 +14,7 @@ import com.mzfk.test.builder.dto.quiz.ResponseQuizDto;
 import com.mzfk.test.builder.model.Answer;
 import com.mzfk.test.builder.model.Question;
 import com.mzfk.test.builder.model.Quiz;
-import com.mzfk.test.builder.service.UserQuizService;
+import com.mzfk.test.builder.service.base.user.UserQuizService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -138,9 +138,9 @@ public class QuizController {
 
     @PutMapping("{quizId}")
     @Operation(
-            summary = "Обновление вопроса в квизе",
-            description = "Обновление вопроса в квизе с id=${quizId}," +
-                    " если вопрос не принадлежит данному квизу, генерируется ошибка",
+            summary = "Изменение вопроса в квизе",
+            description = "Изменение вопроса в квизе с id=${quizId}." +
+                    " У вопроса изменить можно только поле 'questionText'",
             method = "PUT",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
@@ -154,14 +154,14 @@ public class QuizController {
                                                               @RequestBody @Valid RequestUpdateQuestionDto requestQuestion) {
         log.debug("PUT /quiz/{} update {} of Quiz{ id = {} } started", quizId, requestQuestion, quizId);
         Question question = QuestionMapper.fromDto(requestQuestion);
-        ResponseQuizDto response = QuizMapper.toDto(userQuizService.updateQuizQuestion(quizId, question));
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.updateQuestion(quizId, question));
         log.debug("PUT /quiz/{} update {} of Quiz{ id = {} } ended", quizId, requestQuestion, quizId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("{quizId}/{questionId}")
     @Operation(
-            description = "Получение вопроса по id=${questionId}, который принадлежит квизус id=${quizId}",
+            description = "Получение вопроса по id=${questionId}, который принадлежит квизу с id=${quizId}",
             summary = "Получение вопроса по id",
             method = "GET"
     )
@@ -192,17 +192,51 @@ public class QuizController {
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
-                            schema = @Schema(implementation = RequestAnswerDto.class),
+                            schema = @Schema(implementation = RequestCreateAnswerDto.class),
                             mediaType = "application/json"
                     )
             )
     )
     public ResponseEntity<ResponseQuizDto> addAnswerToQuestion(@PathVariable Long quizId,
                                                                @PathVariable Long questionId,
-                                                               @RequestBody @Valid RequestAnswerDto requestAnswerDto) {
-        Answer answer = AnswerMapper.fromDto(requestAnswerDto);
+                                                               @RequestBody @Valid RequestCreateAnswerDto requestCreateAnswerDto) {
+        Answer answer = AnswerMapper.fromDto(requestCreateAnswerDto);
         ResponseQuizDto response = QuizMapper.toDto(userQuizService.addAnswerToQuestion(quizId, questionId, answer));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PutMapping("{quizId}/{questionId}")
+    @Operation(
+            description = "Изменение варианта ответа в вопросе с id=${questionId}," +
+                    " который принадлежит квизу с id=${quizId}. " +
+                    "У варианта ответа можно изменить только текст и характер верности",
+            summary = "Добавление варианта ответа в вопрос",
+            method = "PUT",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = RequestUpdateAnswerDto.class),
+                            mediaType = "application/json"
+                    )
+            )
+    )
+    public ResponseEntity<ResponseQuizDto> updateAnswerOfQuestion(@PathVariable Long quizId,
+                                                                  @PathVariable Long questionId,
+                                                                  @RequestBody @Valid RequestUpdateAnswerDto requestUpdateAnswerDto) {
+        Answer answer = AnswerMapper.fromDto(requestUpdateAnswerDto);
+        ResponseQuizDto response = QuizMapper.toDto(userQuizService.updateAnswer(quizId, questionId, answer));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("{quizId}/{questionId}/{answerId}")
+    @Operation(
+            description = "Удаление варианта ответа по id=${answerId}, который принадлежит вопросу с id=${questionId}",
+            summary = "Удаление варианта ответа",
+            method = "DELETE"
+    )
+    public ResponseEntity<Void> deleteAnswer(@PathVariable Long quizId,
+                                             @PathVariable Long questionId, @PathVariable Long answerId) {
+        userQuizService.deleteAnswerById(quizId, questionId, answerId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

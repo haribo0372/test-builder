@@ -1,7 +1,8 @@
 package com.mzfk.test.builder.dto.question;
 
 import com.mzfk.test.builder.dto.answer.ResponseAnswerDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.Set;
 
