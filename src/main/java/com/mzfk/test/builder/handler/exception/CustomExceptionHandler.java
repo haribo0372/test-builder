@@ -1,6 +1,7 @@
 package com.mzfk.test.builder.handler.exception;
 
 import com.mzfk.test.builder.util.exception.AccessException;
+import com.mzfk.test.builder.util.exception.EntitySaveException;
 import com.mzfk.test.builder.util.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,6 +47,13 @@ public class CustomExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse("Отказ в доступе", ex.getMessage());
         log.error("{} : {}", errorResponse.description, errorResponse.error);
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AccessException.class)
+    public ResponseEntity<ErrorResponse> handleEntitySaveException(EntitySaveException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Отказ в доступе", ex.getMessage());
+        log.error("{} : {}", errorResponse.description, errorResponse.error);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Throwable.class)

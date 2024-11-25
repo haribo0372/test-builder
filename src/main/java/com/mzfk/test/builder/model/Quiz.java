@@ -34,6 +34,11 @@ public class Quiz extends BaseModel {
         questions.add(question);
     }
 
+    public void removeQuestion(Question question){
+        questions.remove(question);
+        question.setQuiz(null);
+    }
+
     public Quiz(Long id, String title, User user) {
         this.id = id;
         this.title = title;

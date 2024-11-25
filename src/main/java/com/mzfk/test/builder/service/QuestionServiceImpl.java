@@ -38,8 +38,7 @@ public class QuestionServiceImpl implements QuestionService {
             throw new ValidateException(message);
         });
 
-        quiz.getQuestions().add(question);
-        question.setQuiz(quiz);
+        quiz.addQuestion(question);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void delete(Quiz quiz, Long questionId) {
-        quiz.getQuestions().remove(findById(quiz, questionId));
+        quiz.removeQuestion(findById(quiz, questionId));
     }
 
     private Optional<Question> findInQuizByPredicateQuestion(Quiz quiz, Predicate<Question> predicate) {
