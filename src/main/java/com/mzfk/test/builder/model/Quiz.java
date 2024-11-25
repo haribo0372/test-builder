@@ -34,7 +34,7 @@ public class Quiz extends BaseModel {
         questions.add(question);
     }
 
-    public void removeQuestion(Question question){
+    public void removeQuestion(Question question) {
         questions.remove(question);
         question.setQuiz(null);
     }
