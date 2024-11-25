@@ -1,12 +1,13 @@
 package com.mzfk.test.builder.service;
 
 import com.mzfk.test.builder.model.User;
-import io.github.cdimascio.dotenv.Dotenv;
+import com.mzfk.test.builder.service.base.jwt.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtServiceImpl implements JwtService {
+    @Value("${token.signing.key}")
     private String jwtSigningKey;
-
-    public JwtService() {
-        Dotenv dotenv = Dotenv.configure().load();
-        jwtSigningKey = dotenv.get("TOKEN_KEY");
-    }
 
     /**
      * Извлечение имени пользователя из токена

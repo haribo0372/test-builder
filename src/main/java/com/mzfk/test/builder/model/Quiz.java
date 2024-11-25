@@ -1,24 +1,23 @@
 package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity(name = "quiz")
-public class Quiz {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Quiz extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "quiz_id")
-    private Long id;
+    protected Long id;
 
     @Column(name = "title")
     private String title;
@@ -30,9 +29,20 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<Question> questions = new HashSet<>();
 
-    public void addQuestion(Question question){
+    public void addQuestion(Question question) {
         question.setQuiz(this);
         questions.add(question);
+    }
+
+    public void removeQuestion(Question question) {
+        questions.remove(question);
+        question.setQuiz(null);
+    }
+
+    public Quiz(Long id, String title, User user) {
+        this.id = id;
+        this.title = title;
+        this.user = user;
     }
 
     @Override
@@ -40,7 +50,7 @@ public class Quiz {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Quiz quiz = (Quiz) o;
-        return Objects.equals(id, quiz.id) && Objects.equals(title, quiz.title);
+        return super.equals(o) && Objects.equals(title, quiz.title);
     }
 
     @Override

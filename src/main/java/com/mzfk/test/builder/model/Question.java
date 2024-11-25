@@ -1,7 +1,8 @@
 package com.mzfk.test.builder.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -10,12 +11,10 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity(name = "question")
-@AllArgsConstructor
-public class Question {
+public class Question extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "question_id")
-    private Long id;
+    protected Long id;
 
     @Column(name = "question", nullable = false)
     private String questionText;
@@ -58,7 +57,7 @@ public class Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return Objects.equals(id, question.id) && Objects.equals(questionText, question.questionText);
+        return super.equals(o) && Objects.equals(questionText, question.questionText);
     }
 
     @Override
